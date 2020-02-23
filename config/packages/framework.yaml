@@ -17,3 +17,5 @@ framework:
 
     http_client:
        max_host_connections: 10
+       default_options:
+          headers: { 'Authorization': 'token %env(resolve:GITHUB_API_TOKEN)%', 'Accept': 'application/vnd.github.v3+json' }

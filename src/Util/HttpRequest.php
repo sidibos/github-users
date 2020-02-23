@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /**
  * Created by PhpStorm.
  * User: sidibos
@@ -9,6 +9,7 @@ namespace App\Util;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\ResponseInterface;
+use App\Exception\HttpRequestException;
 
 class HttpRequest
 {
@@ -24,3 +25,4 @@ class HttpRequest
     }
 
 }
+
