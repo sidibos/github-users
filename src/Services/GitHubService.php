@@ -40,7 +40,6 @@ class GitHubService implements GitHubServiceInterface
     {
         $this->httpClient   = $httpClient;
         $this->logger       = $logger;
-
     }
 
     /**
@@ -59,6 +58,7 @@ class GitHubService implements GitHubServiceInterface
             $response   = $this->httpClient->request('GET', self::API_URI . $endpoint);
             $responseData = HttpRequest::processResponse($response);
         } catch (\Exception $ex) {
+            //die(var_dump($ex->getMessage()));
             throw new GitHubServiceException($ex->getMessage(), $ex->getCode() ?: 500);
         }
         return $responseData;
@@ -84,7 +84,7 @@ class GitHubService implements GitHubServiceInterface
             while(true) {
                 $response       = $this->httpClient->request('GET', $reposUrl);
                 $responseData   = HttpRequest::processResponse($response);
-                $this->extractUserLanguagesFromrepos($responseData, $languages);
+                $this->collectUserLanguagesFromRepos($responseData, $languages);
 
                 if (count($responseData) === self::GITHUB_MAX_REPOS_PER_PAGE) {
                     $pageNo++;
@@ -130,7 +130,7 @@ class GitHubService implements GitHubServiceInterface
      *
      * @param array $languages
      */
-    private function extractUserLanguagesFromrepos(array $data, array &$languages): void
+    private function collectUserLanguagesFromRepos(array $data, array &$languages): void
     {
         foreach($data as $repos) {
             if (isset($repos['language'])) {
