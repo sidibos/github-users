@@ -16,7 +16,14 @@ use App\Exception\GitHubServiceException;
 
 class GitHubService implements GitHubServiceInterface
 {
+    /**
+     * GitHub API URI
+     */
     private const API_URI                   = 'https://api.github.com';
+
+    /**
+     * Maximum number of repos returned by GitHub in a single request.
+     */
     private const GITHUB_MAX_REPOS_PER_PAGE = 30;
 
     /**
@@ -24,6 +31,9 @@ class GitHubService implements GitHubServiceInterface
      */
     private $httpClient;
 
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
     public function __construct(HttpClientInterface $httpClient, LoggerInterface $logger)
@@ -33,6 +43,15 @@ class GitHubService implements GitHubServiceInterface
 
     }
 
+    /**
+     * Get User info from GitHub.
+     *
+     * @param string $username
+     *
+     * @return array
+     *
+     * @throws GitHubServiceException
+     */
     public function getUserInfo(string $username): array
     {
         $endpoint = "/users/{$username}";
@@ -45,6 +64,15 @@ class GitHubService implements GitHubServiceInterface
         return $responseData;
     }
 
+    /**
+     * Get User most popular language from GitHub.
+     *
+     * @param string $username
+     *
+     * @return string
+     *
+     * @throws GitHubServiceException
+     */
     public function getUserPopularLanguage(string $username): string
     {
         try {
@@ -56,7 +84,7 @@ class GitHubService implements GitHubServiceInterface
             while(true) {
                 $response       = $this->httpClient->request('GET', $reposUrl);
                 $responseData   = HttpRequest::processResponse($response);
-                $this->extractUserLanguages($responseData, $languages);
+                $this->extractUserLanguagesFromrepos($responseData, $languages);
 
                 if (count($responseData) === self::GITHUB_MAX_REPOS_PER_PAGE) {
                     $pageNo++;
@@ -72,10 +100,17 @@ class GitHubService implements GitHubServiceInterface
             throw new GitHubServiceException($message, $ex->getCode() ?: 500);
         }
 
-        return $this->getPopularLanguage($languages);
+        return $this->findUserPopularLanguage($languages);
     }
 
-    private function getPopularLanguage(array $languages): string
+    /**
+     * Find User popular programming language.
+     *
+     * @param array $languages
+     *
+     * @return string
+     */
+    private function findUserPopularLanguage(array $languages): string
     {
         $popular = ['count' => 0, 'lang' => ''];
 
@@ -88,7 +123,14 @@ class GitHubService implements GitHubServiceInterface
         return strtoupper($popular['lang']);
     }
 
-    private function extractUserLanguages(array $data, array &$languages): void
+    /**
+     * Extract User languages from Repos.
+     *
+     * @param array $data
+     *
+     * @param array $languages
+     */
+    private function extractUserLanguagesFromrepos(array $data, array &$languages): void
     {
         foreach($data as $repos) {
             if (isset($repos['language'])) {

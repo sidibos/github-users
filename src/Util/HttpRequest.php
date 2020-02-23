@@ -13,13 +13,22 @@ use App\Exception\HttpRequestException;
 
 class HttpRequest
 {
+    /**
+     * Process Http response.
+     *
+     * @param ResponseInterface $response
+     *
+     * @return array
+     *
+     * @throws HttpRequestException
+     */
     public static function processResponse(ResponseInterface $response): array
     {
         $statusCode = $response->getStatusCode();
         $responseData = $response->toArray();
         if ($statusCode !== Response::HTTP_OK) {
             $message = $responseData['message'] . ': ' . $responseData['errors']['title'];
-            throw new \Exception($statusCode, $message);
+            throw new HttpRequestException($statusCode, $message);
         }
         return $responseData;
     }

@@ -28,7 +28,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/", name="user_popular_language", methods="GET")
+     * @Route("/", name="user_popular_language", methods="POST|GET")
      */
     public function getPopularLanguage(Request $request)
     {
@@ -36,16 +36,17 @@ class UserController extends AbstractController
 
         $form->handleRequest($request, null, [
             'action' => $this->generateUrl('user_popular_language'),
-            'method' => 'GET',
+            'method' => 'POST',
         ]);
 
         $favouriteLanguage  = null;
         $errorMsg           = null;
+        $username           = null;
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $data = $form->getData();
-                $username = $data['username'];
+                $data       = $form->getData();
+                $username   = $data['username'];
 
                 $favouriteLanguage = $this->gitHubService->getUserPopularLanguage($username);
             } catch (\Exception $ex) {
@@ -57,6 +58,7 @@ class UserController extends AbstractController
             'form'                  => $form->createView(),
             'favourite_language'    => $favouriteLanguage,
             'error_msg'             => $errorMsg,
+            'username'              => $username,
         ]);
     }
 }

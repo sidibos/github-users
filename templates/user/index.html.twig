@@ -9,7 +9,7 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>User Popular Languge</h1>
+    <h1>Find User Popular Languge</h1>
 
     {{ form_start(form) }}
     {{ form_widget(form) }}
@@ -23,8 +23,8 @@
         <p>
             <h2>Favourite language</h2>
             <ul>
-                <li>User: {{ favourite_language }}</li>
-                <li>Favourite Language: {{ favourite_language }}</li>
+                <li>Username: <strong>{{ username }}</strong></li>
+                <li>Favourite Language: <strong>{{ favourite_language }}</strong></li>
             </ul>
         </p>
     {% endif %}

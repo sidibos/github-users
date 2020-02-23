@@ -20,7 +20,6 @@ class UserType extends AbstractType
         $builder
             ->add('username', TextType::class)
             ->add('Submit', SubmitType::class)
-            //->setAction('user_popular_language')
-            ->setMethod('GET');
+            ->setMethod('POST');
     }
 }
