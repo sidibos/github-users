@@ -60,7 +60,6 @@ class GitHubService implements GitHubServiceInterface
             $response   = $this->httpClient->request('GET', self::API_URI . $endpoint);
             $responseData = HttpRequest::processResponse($response);
         } catch (\Exception $ex) {
-            //die(var_dump($ex->getMessage()));
             throw new GitHubServiceException($ex->getMessage(), $ex->getCode() ?: 500);
         }
         return new UserInfoModel($responseData);

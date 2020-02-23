@@ -28,7 +28,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/", name="user_popular_language", methods="POST|GET")
+     * @Route("/", name="user_popular_language", methods="GET")
      */
     public function getPopularLanguage(Request $request)
     {
@@ -36,7 +36,6 @@ class UserController extends AbstractController
 
         $form->handleRequest($request, null, [
             'action' => $this->generateUrl('user_popular_language'),
-            'method' => 'POST',
         ]);
 
         $favouriteLanguage  = null;
