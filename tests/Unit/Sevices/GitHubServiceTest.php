@@ -1,11 +1,11 @@
-<?php
+<?php declare(strict_types = 1);
 /**
  * Created by PhpStorm.
  * User: sidibos
  * Date: 23/02/2020
  * Time: 19:34
  */
-namespace App\Unti\Tests\Services;
+namespace App\Tests\Unit\Services;
 
 use App\Services\GitHubService;
 use PHPUnit\Framework\TestCase;
@@ -17,7 +17,7 @@ class GitHubServiceTest extends TestCase
 {
     private $gitHubService;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->loggerMock       = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
@@ -26,10 +26,10 @@ class GitHubServiceTest extends TestCase
 
     public function testGetUserInfo()
     {
-        $userInfo = $this->gitHubService->getUserInfo('sidibos');
+        $userInfoModel = $this->gitHubService->getUserInfo('sidibos');
 
-        $this->assertEquals('sidibos', $userInfo['login']);
-        $this->assertContains('repos_url', $userInfo);
+        $this->assertEquals('sidibos', $userInfoModel->getLogin());
+        $this->assertNotNull($userInfoModel->getReposUrl());
     }
 
     public function testGetInvalidUserInfo()

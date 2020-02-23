@@ -10,6 +10,8 @@ namespace App\Services;
 
 use App\Util\HttpRequest;
 use Psr\Log\LoggerInterface;
+use App\Model\GitHub\UserInfo as UserInfoModel;
+use App\Model\GitHub\Repos as ReposModel;
 use App\Contracts\GitHubServiceInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use App\Exception\GitHubServiceException;
@@ -51,7 +53,7 @@ class GitHubService implements GitHubServiceInterface
      *
      * @throws GitHubServiceException
      */
-    public function getUserInfo(string $username): array
+    public function getUserInfo(string $username): UserInfoModel
     {
         $endpoint = "/users/{$username}";
         try {
@@ -61,7 +63,7 @@ class GitHubService implements GitHubServiceInterface
             //die(var_dump($ex->getMessage()));
             throw new GitHubServiceException($ex->getMessage(), $ex->getCode() ?: 500);
         }
-        return $responseData;
+        return new UserInfoModel($responseData);
     }
 
     /**
@@ -76,19 +78,20 @@ class GitHubService implements GitHubServiceInterface
     public function getUserPopularLanguage(string $username): string
     {
         try {
-            $userInfo   = $this->getUserInfo($username);
-            $reposUrl   = $userInfo['repos_url'];
-            $languages  = [];
-            $pageNo     = 1;
+            $userInfoModel      = $this->getUserInfo($username);
+            $originalReposUrl   = $reposUrl       = $userInfoModel->getReposUrl();
+            $languages          = [];
+            $pageNo             = 1;
 
             while(true) {
                 $response       = $this->httpClient->request('GET', $reposUrl);
                 $responseData   = HttpRequest::processResponse($response);
                 $this->collectUserLanguagesFromRepos($responseData, $languages);
 
+                // There could be more pages if we have more than 30 repos on the same page
                 if (count($responseData) === self::GITHUB_MAX_REPOS_PER_PAGE) {
                     $pageNo++;
-                    $reposUrl = $userInfo['repos_url'] . '?page=' . $pageNo;
+                    $reposUrl = $originalReposUrl . '?page=' . $pageNo;
                 } else {
                     break;
                 }
@@ -132,9 +135,10 @@ class GitHubService implements GitHubServiceInterface
      */
     private function collectUserLanguagesFromRepos(array $data, array &$languages): void
     {
-        foreach($data as $repos) {
-            if (isset($repos['language'])) {
-                $language = strtolower($repos['language']);
+        foreach($data as $reposData) {
+            $language = (new ReposModel($reposData))->getLanguage();
+            if (null !== $language) {
+                $language = strtolower($language);
                 if (!isset($languages[$language])) {
                     $languages[$language] = 1;
                 } else {

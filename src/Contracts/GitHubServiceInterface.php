@@ -7,6 +7,7 @@
  */
 namespace App\Contracts;
 
+use App\Model\GitHub\UserInfo as UserInfoModel;
 use App\Exception\GitHubServiceException;
 
 interface GitHubServiceInterface
@@ -20,7 +21,7 @@ interface GitHubServiceInterface
      *
      * @throws GitHubServiceException
      */
-    public function getUserInfo(string $username): array;
+    public function getUserInfo(string $username): UserInfoModel;
 
     /**
      * Get User most popular language from GitHub.
