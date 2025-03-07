@@ -117,6 +117,20 @@
     "phpdocumentor/type-resolver": {
         "version": "1.0.1"
     },
+    "phpunit/phpunit": {
+        "version": "8.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "4.7",
+            "ref": "4eea8d6a476c8e9eb28c56725a4c0716df7d14c1"
+        },
+        "files": [
+            ".env.test",
+            "phpunit.xml.dist",
+            "tests/bootstrap.php"
+        ]
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
@@ -186,9 +200,6 @@
         "files": [
             "config/packages/dev/debug.yaml"
         ]
-    },
-    "symfony/debug-pack": {
-        "version": "v1.0.7"
     },
     "symfony/dependency-injection": {
         "version": "v5.0.4"
@@ -329,9 +340,6 @@
     "symfony/options-resolver": {
         "version": "v5.0.4"
     },
-    "symfony/orm-pack": {
-        "version": "v1.0.8"
-    },
     "symfony/phpunit-bridge": {
         "version": "4.3",
         "recipe": {
@@ -368,9 +376,6 @@
     },
     "symfony/process": {
         "version": "v5.0.4"
-    },
-    "symfony/profiler-pack": {
-        "version": "v1.0.4"
     },
     "symfony/property-access": {
         "version": "v5.0.4"
@@ -419,9 +424,6 @@
     "symfony/serializer": {
         "version": "v5.0.4"
     },
-    "symfony/serializer-pack": {
-        "version": "v1.0.2"
-    },
     "symfony/service-contracts": {
         "version": "v2.0.1"
     },
@@ -430,9 +432,6 @@
     },
     "symfony/string": {
         "version": "v5.0.4"
-    },
-    "symfony/test-pack": {
-        "version": "v1.0.6"
     },
     "symfony/translation": {
         "version": "3.3",
@@ -466,9 +465,6 @@
             "config/packages/twig.yaml",
             "templates/base.html.twig"
         ]
-    },
-    "symfony/twig-pack": {
-        "version": "v1.0.0"
     },
     "symfony/validator": {
         "version": "4.3",
