@@ -1,5 +1,5 @@
 # GitHub User Favourite Programming Language
-This application will guess GitHub user favourite programming language
+This application will guess a GitHub user favourite programming language, by going through user's repos and finding the most popular programming language used in those repos.
 
 # Requirements
 You will need [Docker](https://www.docker.com/products/docker-desktop) installed
@@ -15,27 +15,25 @@ $ git clone https://github.com/sidibos/github-users.git
 ## Go into the application folder
 ```console
 $ cd github-users
-
 ```
 
-## Get a GitHub Token
-Go to GitHub [token page](https://github.com/settings/developers), grab an access token.
-
-Populate the environment variable `GITHUB_API_TOKEN` with this value
+## Copy env.example contain
+```console
+$ cp .env.example .env
+```
 
 ## Run Docker command to build the environment
 
 ```console
 $ docker-compose up -d
-
 ```
 
 ## Install the dependencies
-```
+```console
 $ docker-compose exec php composer install
 ```
 
-## Navigate the application
+## Navigate to the application
 Browse [https://localhost:8000](https://localhost:8000) and accept the certificate
 
 You should see the page where you can enter your GitHub username and get your favourite programming language when you hit the `Submit` button.

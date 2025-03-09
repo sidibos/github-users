@@ -28,7 +28,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/", name="user_popular_language", methods="GET")
+     * @Route("/", name="user_popular_language", methods={"GET", "POST"})
      */
     public function getPopularLanguage(Request $request)
     {
