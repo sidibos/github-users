@@ -60,7 +60,9 @@ class GitHubService implements GitHubServiceInterface
             $response   = $this->httpClient->request('GET', self::API_URI . $endpoint);
             $responseData = HttpRequest::processResponse($response);
         } catch (\Exception $ex) {
-            throw new GitHubServiceException($ex->getMessage(), $ex->getCode() ?: 500);
+            $errorCode = $ex->getCode() ?: 500;
+            $errorMsg = $errorCode === 404 ? 'User Not Found' : $ex->getMessage();
+            throw new GitHubServiceException($errorMsg, $errorCode);
         }
         return new UserInfoModel($responseData);
     }
@@ -81,10 +83,15 @@ class GitHubService implements GitHubServiceInterface
             $originalReposUrl   = $reposUrl       = $userInfoModel->getReposUrl();
             $languages          = [];
             $pageNo             = 1;
+            $noRposFound       = false;
 
             while(true) {
                 $response       = $this->httpClient->request('GET', $reposUrl);
                 $responseData   = HttpRequest::processResponse($response);
+                if (empty($responseData)) {
+                    $noRposFound = true;
+                    break;
+                }
                 $this->collectUserLanguagesFromRepos($responseData, $languages);
 
                 // There could be more pages if we have more than 30 repos on the same page
@@ -95,7 +102,9 @@ class GitHubService implements GitHubServiceInterface
                     break;
                 }
             }
-
+            if ($noRposFound) {
+                throw new GitHubServiceException('No Repos Found for the User', 404);
+            }
         } catch (\Exception $ex) {
             $message = $ex->getMessage();
             $this->logger->error($message, $ex->getTrace());
